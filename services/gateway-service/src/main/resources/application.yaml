@@ -1,0 +1,67 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: cg12306-gateway${unique-name:}-service
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+
+    gateway:
+      routes:
+        - id: cg12306-user-service
+          uri: lb://cg12306-user${unique-name:}-service/api/user-service/**
+          predicates:
+            - Path=/api/user-service/**
+          filters:
+            - name: TokenValidate
+              args:
+                blackPathPre:
+                  - /api/user-service/passenger
+                  - /api/user-service/query
+                  - /api/user-service/logout
+                  - /api/user-service/deletion
+
+        - id: cg12306-ticket-service
+          uri: lb://cg12306-ticket${unique-name:}-service/api/ticket-service/**
+          predicates:
+            - Path=/api/ticket-service/**
+          filters:
+            - name: TokenValidate
+              args:
+                blackPathPre:
+                  - /api/ticket-service/ticket/purchase
+                  - /api/ticket-service/ticket/pay/query
+                  - /api/ticket-service/ticket/cancel
+                  - /api/ticket-service/ticket/exchange
+
+        - id: cg12306-pay-service
+          uri: lb://cg12306-pay${unique-name:}-service/api/pay-service/**
+          predicates:
+            - Path=/api/pay-service/**
+
+        - id: cg12306-order-service
+          uri: lb://cg12306-order${unique-name:}-service/api/order-service/**
+          predicates:
+            - Path=/api/order-service/**
+          filters:
+            - name: TokenValidate
+              args:
+                blackPathPre:
+                  - /api/order-service/order/ticket/query
+                  - /api/order-service/order/ticket/page
+                  - /api/order-service/order/ticket/self/page
+                  - /api/order-service/order/ticket/create
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    tags:
+      application: ${spring.application.name}
