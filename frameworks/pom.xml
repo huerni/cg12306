@@ -11,8 +11,19 @@
 
     <artifactId>cg12306-frameworks</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>base</module>
+        <module>convention</module>
+        <module>database</module>
+        <module>cache</module>
+        <module>common</module>
+        <module>designpattern</module>
+        <module>distributedid</module>
+        <module>idempotent</module>
+        <module>log</module>
+        <module>web</module>
+        <module>user</module>
     </modules>
 
 </project>
